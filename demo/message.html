@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>message</title>
+
+    <script src="https://cdn.bootcss.com/vue/2.5.15/vue.min.js"></script>
+
+    <style>
+        .message {
+            position: fixed;
+            z-index: 1000;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0 30px 0 50px;
+            line-height: 40px;
+            min-width: 300px;
+            box-shadow: 1px 5px 2px rgba(0, 0, 0, .2);
+            animation: moveTip .3s 1;
+            -webkit-animation: moveTip .3s 1; /* Safari 和 Chrome */
+        }
+        .message:before {
+            width: 40px;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            text-align: center;
+            color: #fff;
+        }
+        .message.success {
+            color: #67c23a;
+            background: #f0f9eb;
+        }
+        .message.success:before {
+            content: '✓';
+            background: #3ac245;
+        }
+        .message.error {
+            color: #f56c6c;
+            background: #fef0f0;
+        }
+        .message.error:before {
+            content: '✖';
+            background: #f9323b;
+        }
+
+        @keyframes moveTip
+        {
+            from {top:0;}
+            to {top:30px;}
+        }
+
+        @-moz-keyframes moveTip /* Firefox */
+        {
+            from {top:0;}
+            to {top:30px;}
+        }
+
+        @-webkit-keyframes moveTip /* Safari 和 Chrome */
+        {
+            from {top:0;}
+            to {top:30px;}
+        }
+
+        @-o-keyframes moveTip /* Opera */
+        {
+            from {top:0;}
+            to {top:30px;}
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="message" style="cursor:pointer;" @click="$message.error('哈哈')">
+    点我测试message
+</div>
+
+<script>
+    /** 提示小弹窗 */
+    let message = {}
+    message.install = (Vue, options) => {
+        Vue.prototype.$message = {
+            success (msg) {
+                let tpl = Vue.extend({
+                    template: '<div class="message success">'+msg+'</div>'
+                })
+
+                let node = new tpl().$mount().$el
+                document.body.appendChild(node)
+                setTimeout(function () {
+                    document.body.removeChild(node)
+                }, 2500)
+            },
+            error (msg) {
+                let tpl = Vue.extend({
+                    template: '<div class="message error">'+msg+'</div>'
+                })
+                let node = new tpl().$mount().$el
+                document.body.appendChild(node)
+                setTimeout(function () {
+                    document.body.removeChild(node)
+                }, 2500)
+            }
+        }
+    }
+    //export default message
+    Vue.use(message)
+
+
+    /** demo */
+    new Vue({
+        el: '#message'
+    })
+</script>
+</body>
+</html>

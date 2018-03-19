@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Modal</title>
+
+    <script src="https://cdn.bootcss.com/vue/2.5.15/vue.min.js"></script>
+
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, .6);
+        }
+        .modal .content {
+            width: 60%;
+            height: 60%;
+            background: #fff;
+            border-radius: 10px;
+            position: absolute;
+            top: 15%;
+            left: 20%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal .close {
+            position: absolute;
+            right: 0;
+            top: 0;
+            font-size: 24px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            color: #bbb;
+        }
+
+        .modal .close:hover {
+            color: #20a0ff;
+        }
+
+        .modal .head {
+            border-bottom: 1px solid #dcdfe6;
+            line-height: 30px;
+            text-align: center;
+        }
+
+        .modal .body {
+            flex: 1;
+            overflow: auto;
+        }
+
+        .modal .foot {
+            border-top: 1px solid #dcdfe6;
+            text-align: center;
+        }
+
+        .modal .foot .btn {
+            margin: 10px 10px 0 10px;
+        }
+
+        .btn {
+            border: 1px solid #dcdfe6;
+            background: transparent;
+            font-size: 12px;
+            padding: 3px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #20a0ff;
+            border-color: #20a0ff;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #53b6ff;
+            border-color: #53b6ff;
+        }
+    </style>
+</head>
+<body>
+
+<div id="modal" style="cursor:pointer;">
+    <div @click="showModal = true">点我测试modal</div>
+
+    <my-modal title="哈哈" v-model="showModal">
+        这是内容
+    </my-modal>
+</div>
+
+<script type="text/x-template" id="modal-template">
+    <div class="modal" v-show="value">
+        <input type="hidden" :value="value" @input="value = $event.target.value">
+
+        <div class="content">
+            <span class="close" @click="$emit('input', false)">&times;</span>
+            <div class="head">{{title}}</div>
+            <div class="body">
+                <slot></slot>
+            </div>
+            <div class="foot">
+                <button class="btn btn-primary" type="button" @click="$parent.$emit('confirm')">确定</button>
+                <button class="btn" type="button" @click="$emit('input', false)">取消</button>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script>
+    Vue.component('my-modal', {
+        template: '#modal-template',
+        props: {
+            value: Boolean,
+            title: String
+        }
+    })
+
+    /** demo */
+    new Vue({
+        el: '#modal',
+        data () {
+            return {
+                showModal: false
+            }
+        },
+        mounted () {
+            this.$on('confirm', () => {
+                alert('点击了弹窗的确定按钮')
+            })
+        }
+    })
+</script>
+</body>
+</html>
